@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DP2 Path A – Crash Test Energy Analysis</title>
+
+  <!-- ============================================================
+       PASTE THIS <style> BLOCK INTO YOUR LESSON'S <head>
+       (or merge into your existing stylesheet)
+       Label: DP2 Path A Energy Analysis
+  ============================================================ -->
+  <style>
+    /* ── Base lesson reset (keep if not already present) ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    /* ── DP2 Path A Energy Analysis: wrapper ── */
+    .energy-analysis {
+      max-width: 860px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border: 2px solid #b0bec5;
+      border-radius: 6px;
+      padding: 2rem 2.2rem 2.4rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    /* ── Section heading ── */
+    .energy-analysis__heading {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      border-bottom: 3px solid #1a3a5c;
+      padding-bottom: .45rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Callout box ── */
+    .energy-analysis__callout {
+      background: #e8f4fd;
+      border-left: 5px solid #1976d2;
+      border-radius: 4px;
+      padding: .9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      font-size: .95rem;
+    }
+    .energy-analysis__callout strong {
+      display: block;
+      font-size: 1rem;
+      color: #1a3a5c;
+      margin-bottom: .3rem;
+    }
+
+    /* ── Test Run button group ── */
+    .energy-analysis__btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Shared button style */
+    .btn {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      font-size: .92rem;
+      font-weight: 600;
+      border: 2px solid #1a3a5c;
+      border-radius: 4px;
+      padding: .52rem 1.1rem;
+      cursor: pointer;
+      transition: background .18s, color .18s;
+    }
+
+    /* Test Run buttons – outlined by default */
+    .btn--run {
+      background: #ffffff;
+      color: #1a3a5c;
+    }
+    .btn--run:hover,
+    .btn--run:focus-visible {
+      background: #d0e6f7;
+    }
+    .btn--run.is-active {
+      background: #1a3a5c;
+      color: #ffffff;
+    }
+    .btn--run.is-active:hover {
+      background: #163060;
+    }
+
+    /* Analyse button */
+    .btn--analyse {
+      background: #c0392b;
+      color: #ffffff;
+      border-color: #c0392b;
+      display: block;
+      margin-top: 1rem;
+    }
+    .btn--analyse:hover,
+    .btn--analyse:focus-visible {
+      background: #a93226;
+      border-color: #a93226;
+    }
+
+    /* ── Comparison table ── */
+    .energy-analysis__table-wrap {
+      overflow-x: auto;
+      margin-top: 0;
+    }
+
+    .energy-analysis__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+    }
+    .energy-analysis__table th {
+      background: #1a3a5c;
+      color: #ffffff;
+      text-align: center;
+      font-size: .93rem;
+      padding: .6rem 1rem;
+      letter-spacing: .04em;
+    }
+    .energy-analysis__table td {
+      text-align: center;
+      vertical-align: top;
+      padding: .7rem .8rem 1rem;
+      border: 1px solid #cfd8dc;
+      width: 50%;
+    }
+    .energy-analysis__table img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 3px;
+      border: 1px solid #b0bec5;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* ── Analysis result image ── */
+    .energy-analysis__result {
+      margin-top: 1.2rem;
+      text-align: center;
+    }
+    .energy-analysis__result img {
+      max-width: 100%;
+      height: auto;
+      border: 2px solid #1976d2;
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
+    }
+    .energy-analysis__result-label {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      font-size: .88rem;
+      color: #555;
+      margin-top: .4rem;
+    }
+
+    /* ── Utility: hidden ── */
+    .is-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     PASTE THIS BLOCK where the DP2 Path A interactive should appear.
+     Place it inside your existing DP2 Path A section.
+============================================================ -->
+
+<section class="energy-analysis" aria-labelledby="energy-heading">
+
+  <!-- 1. Heading -->
+  <h2 class="energy-analysis__heading" id="energy-heading">
+    Crash Test Energy Analysis
+  </h2>
+
+  <!-- 2. Callout box -->
+  <div class="energy-analysis__callout" role="note">
+    <strong>Variable Being Analyzed: Energy</strong>
+    This analysis looks for evidence that some crash energy moved into the car
+    and caused parts to change shape.
+  </div>
+
+  <!-- 3. Test Run buttons -->
+  <p style="font-family:'Trebuchet MS',Arial,sans-serif; font-size:.93rem; margin-bottom:.7rem;">
+    Choose a crash test run to compare before and after impact:
+  </p>
+  <div class="energy-analysis__btn-group" role="group" aria-label="Select a test run">
+    <button class="btn btn--run" data-run="1" aria-pressed="false">Test Run 1</button>
+    <button class="btn btn--run" data-run="2" aria-pressed="false">Test Run 2</button>
+    <button class="btn btn--run" data-run="3" aria-pressed="false">Test Run 3</button>
+  </div>
+
+  <!-- 4. Comparison table (hidden until a run is selected) -->
+  <div id="comparison-table-wrap" class="energy-analysis__table-wrap is-hidden">
+    <table class="energy-analysis__table" aria-label="Before and after impact comparison">
+      <thead>
+        <tr>
+          <th scope="col">Before Impact</th>
+          <th scope="col">After Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <img
+              id="img-before"
+              src="images/Energy_no impact.png"
+              alt="Car before impact – no deformation visible"
+            />
+          </td>
+          <td>
+            <img
+              id="img-after"
+              src=""
+              alt=""
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 5. Run Energy Analysis button -->
+    <button
+      class="btn btn--analyse"
+      id="btn-analyse"
+      aria-controls="analysis-result"
+    >
+      Run Energy Analysis
+    </button>
+  </div>
+
+  <!-- 6 & 7. Analysis result (hidden until button clicked) -->
+  <div id="analysis-result" class="energy-analysis__result is-hidden" aria-live="polite">
+    <img id="img-analysis" src="" alt="" />
+    <p class="energy-analysis__result-label" id="analysis-label"></p>
+  </div>
+
+</section><!-- /.energy-analysis -->
+
+
+<!-- ============================================================
+     PASTE THIS <script> BLOCK just before </body>
+     (or into your existing lesson script file)
+     Label: DP2 Path A Energy Analysis
+============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  // ── Image map ──────────────────────────────────────────────
+  const afterImages = {
+    1: {
+      src: 'images/Energy_TestRun1.png',
+      alt: 'Car after impact in Test Run 1 – showing deformation from crash energy'
+    },
+    2: {
+      src: 'images/Energy_TestRun2.png',
+      alt: 'Car after impact in Test Run 2 – showing deformation from crash energy'
+    },
+    3: {
+      src: 'images/Energy_TestRun3.png',
+      alt: 'Car after impact in Test Run 3 – showing deformation from crash energy'
+    }
+  };
+
+  const analysisImages = {
+    1: {
+      src: 'images/Energy_TestRun1AnalysisA.png',
+      alt: 'Energy analysis diagram for Test Run 1 – Path A findings'
+    },
+    2: {
+      src: 'images/Energy_TestRun2AnalysisA.png',
+      alt: 'Energy analysis diagram for Test Run 2 – Path A findings'
+    },
+    3: {
+      src: 'images/Energy_TestRun3AnalysisA.png',
+      alt: 'Energy analysis diagram for Test Run 3 – Path A findings'
+    }
+  };
+
+  // ── DOM references ─────────────────────────────────────────
+  const runButtons       = document.querySelectorAll('.btn--run');
+  const tableWrap        = document.getElementById('comparison-table-wrap');
+  const imgAfter         = document.getElementById('img-after');
+  const analysisResult   = document.getElementById('analysis-result');
+  const imgAnalysis      = document.getElementById('img-analysis');
+  const analysisLabel    = document.getElementById('analysis-label');
+  const btnAnalyse       = document.getElementById('btn-analyse');
+
+  let selectedRun = null;
+
+  // ── Helper: reset analysis area ────────────────────────────
+  function hideAnalysis () {
+    analysisResult.classList.add('is-hidden');
+    imgAnalysis.src = '';
+    imgAnalysis.alt = '';
+    analysisLabel.textContent = '';
+  }
+
+  // ── Test Run button click ──────────────────────────────────
+  runButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const run = parseInt(btn.dataset.run, 10);
+
+      // Update active state
+      runButtons.forEach(function (b) {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      // Update selected run
+      selectedRun = run;
+
+      // Populate after-impact image
+      imgAfter.src = afterImages[run].src;
+      imgAfter.alt = afterImages[run].alt;
+
+      // Show table
+      tableWrap.classList.remove('is-hidden');
+
+      // Reset analysis (req 8)
+      hideAnalysis();
+    });
+  });
+
+  // ── Run Energy Analysis button click ──────────────────────
+  btnAnalyse.addEventListener('click', function () {
+    if (!selectedRun) return;
+
+    imgAnalysis.src = analysisImages[selectedRun].src;
+    imgAnalysis.alt = analysisImages[selectedRun].alt;
+    analysisLabel.textContent =
+      'Energy Analysis – Test Run ' + selectedRun + ' (Path A)';
+
+    analysisResult.classList.remove('is-hidden');
+  });
+
+}());
+</script>
+
+</body>
+</html>
